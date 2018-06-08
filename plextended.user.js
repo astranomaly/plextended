@@ -13,8 +13,6 @@
 // @grant        GM_info
 // ==/UserScript==
 
-console.log('[plxd] ping');
-
 var PLXD = {};
 
 // Stupid/temp console logger so that the log can be filtered for 'plxd'
@@ -22,9 +20,8 @@ function clog(inp) {
     return console.log("[plxd] "+inp);
 }
 
-// Doesn't run except when page is refreshed. Force-run on change in navigation
-// Uses timer instead of load event to trigger
-// No logic for choosing total/played time (only works on played currently)
+// FIXME: Doesn't run except when page is refreshed. Force-run on change in navigation
+// FIXME: Uses timer instead of load event to trigger
 
 // Extension
 PLXD = {
@@ -36,16 +33,24 @@ PLXD = {
         clog("Welcome to Plextended v" + this.VERSION + "!");
 
         try {
+            clog('Getting current vid length...');
             setTimeout(function(){
-                clog('Getting current vid length...');
-                let curDate   = new Date();
-                let curHour   = curDate.getHours();
-                let curMins   = curDate.getMinutes();
-                let vidLength = document.querySelector('span[class^=PrePlayTertiaryTitleSpacer] span:not([class^=PrePlayDashSeparator]):last-of-type').innerText;
+
+
+                let curDate = new Date();
+                let curHour = curDate.getHours();
+                let curMins = curDate.getMinutes();
+                let vidInfo = document.querySelectorAll('span[class^=PrePlayTertiaryTitleSpacer] span:not([class^=PrePlayDashSeparator])');
                 let newHour = 0;
                 let newMins = 0;
+                let vidLength = 0;
 
-                vidLength = Number( vidLength.match(/\d+/)[0] );
+                vidInfo.forEach(item => {
+                    item = Number( item.innerText.match(/\d+/)[0] );
+                    if (item !== isNaN) {
+                        vidLength = item;
+                    }
+                });
 
                 curHour = PLXD.UTILS.hour12( curHour );
 
@@ -62,13 +67,11 @@ PLXD = {
                 let target = document.querySelector('span[class^=PrePlayTertiaryTitleSpacer]');
                 let phraseSpot = document.createElement('span');
 
-                phraseSpot.id = 'phraseSpot'
+                phraseSpot.id = 'phraseSpot';
                 target.appendChild(phraseSpot);
 
                 phraseSpot.innerHTML = '<span class="PrePlayDashSeparator-separator-1d01z">&middot;</span>Finish by '+newHour+':'+PLXD.UTILS.pad( newMins, 2);
-
-                clog( 'DONE' );
-            },5000)
+            },5000);
         } catch (error) {
             console.warn('[plxd] '+error );
         }
@@ -90,6 +93,7 @@ PLXD = {
     }
 };
 
+// Attempt to run the extension
 try {
     PLXD.run();
 } catch (error) {

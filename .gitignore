@@ -1,4 +1,5 @@
 .DS_Store
+.vscode
 node_modules
 *.tmp*
 .sass-cache
@@ -6,3 +7,4 @@ user-settings.json
 build/staging
 build/dev
 *.sublime*
+*.code-*
