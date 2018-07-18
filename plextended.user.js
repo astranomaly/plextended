@@ -1,15 +1,10 @@
 // ==UserScript==
 // @name         Plextended
 // @namespace    https://github.com/astranomaly
-// @version      0.0.4
+// @version      0.0.5
 // @description  Tweaks for the Plex web interface
 // @author       Astranomaly
 // @include      https://app.plex.tv/*
-// @grant        GM_setValue
-// @grant        GM_getValue
-// @grant        GM_listValues
-// @grant        GM_deleteValue
-// @grant        GM_addStyle
 // @grant        GM_info
 // ==/UserScript==
 
@@ -21,6 +16,7 @@ function clog(inp) {
 }
 
 // FIXME: Doesn't run except when page is refreshed. Force-run on change in navigation
+// FIXME: Doesn't parse 'X hr Y min' strings
 
 // Extension
 PLXD = {
@@ -34,7 +30,7 @@ PLXD = {
 
         // Wait for the TV show data to load
         this.UTILS.checkElem( '[data-qa-id=metadataTitleLink]' )
-        .then( this.getTimeInfo )
+        .then( () => this.getTimeInfo() )
         .then( (result) => this.getFinishTime(result) )
         .then( (result) => this.insertFinishTime(result) );
     },
@@ -61,6 +57,8 @@ PLXD = {
     getFinishTime: function( timeObj ){
         // Determine the cumulative minutes
         timeObj.bulkMins = timeObj.mins + timeObj.len;
+        timeObj.newHour = timeObj.hour;
+        timeObj.newMins = timeObj.bulkMins;
 
         // Increment hours for each extra 60 mins
         if( timeObj.bulkMins >= 60 ){
