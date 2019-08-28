@@ -7,10 +7,17 @@ class PLXD {
 
     constructor(){
         Utils.log(`Welcome to Plextended v${this._VERSION}! Last updated on ${this._TIMESTAMP}.`);
+        let page: HTMLDivElement | null = document.querySelector('#content');
 
         // Start Features
-        // FIXME: this needs to run when the URL changes
         new FinishTime();
+        // Check if page content changes
+        if (page !== null) {
+            Utils.observeElem(page, () => {
+                // Re-run Features when page changes
+                new FinishTime();
+            } );
+        }
     }
 }
 

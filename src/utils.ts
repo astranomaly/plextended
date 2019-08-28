@@ -27,6 +27,23 @@ class Utils {
     };
 
     /**
+     * Run a function when an element mutates
+     * @param elem An element to observe
+     * @param callback The function that will run when a mutation is observed
+     * @param config A MutationObserver configuration. Default: `childList` & `attributes`
+     */
+    public static observeElem = async ( elem:HTMLElement|null, callback:MutationCallback, config:MutationObserverInit = {
+        childList: true,
+        attributes: true,
+    } ):Promise<MutationObserver> => {
+        if( elem === null ) throw new Error(`Couldn't find the element to observe: ${elem}`);
+        // Create a new observer
+        const observe:MutationObserver = new MutationObserver( callback );
+        observe.observe( elem, config );
+        return observe;
+    }
+
+    /**
      * Converts 24 hour format to 12 hour format
      * @param hour 24-hour formatted number
      */
