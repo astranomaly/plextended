@@ -43,8 +43,11 @@ class FinishTime {
         let finishTime:FinishInfo = {
             "bulkMins": timeObj.mins + timeObj.len,
             "newHour": timeObj.hour,
-            "newMins": 'error',
+            "newMins": 'ERROR',
         }
+
+        // By default the new minute amount is the bulk minutes
+        finishTime.newMins = `${finishTime.bulkMins}`;
 
         // Increment hours for each extra 60 mins
         if( finishTime.bulkMins >= 60 ){
@@ -64,9 +67,7 @@ class FinishTime {
     private _insertFinishTime = ( timestamp:string ):boolean => {
         // Choose where to insert the timestamp
         const tar:HTMLSpanElement|null = document.querySelector('span[class^=PrePlayTertiaryTitleSpacer]');
-        if( tar === null ){
-            throw new Error(`Couldn't place timestamp, target was null`);
-        }else{
+        if( tar !== null ){
             // Build a new location for the timestamp
             const stampSpot: HTMLSpanElement = document.createElement('span');
             stampSpot.id = 'plxd_stampSpot';
@@ -75,6 +76,8 @@ class FinishTime {
             stampSpot.innerHTML = `<span style="margin:0 4px">&middot;</span>Finish by ${timestamp}`;
 
             return true;
+        }else{
+            return false;
         }
     }
 }

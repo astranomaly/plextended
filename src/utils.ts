@@ -36,7 +36,7 @@ class Utils {
         childList: true,
         attributes: true,
     } ):Promise<MutationObserver> => {
-        if( elem === null ) throw new Error(`Couldn't find the element to observe: ${elem}`);
+        if (elem === null) throw new Error(`▶️ Couldn't find the element to observe: ${elem}`);
         // Create a new observer
         const observe:MutationObserver = new MutationObserver( callback );
         observe.observe( elem, config );
