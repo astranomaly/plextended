@@ -1,10 +1,14 @@
 class FinishTime {
     constructor(){
         Utils.checkElem('[data-qa-id=metadataTitleLink]')
-        .then( () => { return this._getTimeInfo() } )
-            .then(timeInfo => { /*  */ } )
+        .then( () => { return this._getTimeInfo(); } )
+        .then( timeInfo => { return this._getFinishTime(timeInfo); } )
+        .then( finishTime => { return this._insertFinishTime(finishTime) } )
     }
 
+    /**
+     * Extracts raw time data from the `Date()` and from Plex
+     */
     private _getTimeInfo = async ():Promise<TimeInfo> => {
         // Get the current timestamp
         const curDate:Date = new Date();
@@ -28,5 +32,36 @@ class FinishTime {
         }
         // Return a TimeInfo object
         return {hour:curHour, mins:curMins, len:vidLength}
+    }
+
+    /**
+     * Process time data into a future timestamp
+     * @param timeObj An object containing the current `hour`, `mins`, and the length (`len`) of the video
+     */
+    private _getFinishTime = async ( timeObj:TimeInfo ):Promise<string> => {
+        // Determine cumulative minutes and prepare variables
+        let finishTime:FinishInfo = {
+            "bulkMins": timeObj.mins + timeObj.len,
+            "newHour": timeObj.hour,
+            "newMins": 'error',
+        }
+
+        // Increment hours for each extra 60 mins
+        if( finishTime.bulkMins >= 60 ){
+            finishTime.newHour = timeObj.hour + Math.floor( finishTime.bulkMins / 60 );
+            finishTime.newMins = Utils.pad( finishTime.bulkMins % 60 );
+            while( finishTime.newHour > 12 ){
+                // The clock only displays 12hr timeblocks
+                finishTime.newHour = finishTime.newHour - 12;
+            }
+        }
+        return `${finishTime.newHour}:${finishTime.newMins}`;
+    }
+
+    /**
+     * Adds the Finish Time timestamp into the DOM
+     */
+    private _insertFinishTime = ( timestamp:string ):boolean => {
+        return true;
     }
 }
