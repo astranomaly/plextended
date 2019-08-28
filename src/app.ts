@@ -9,6 +9,7 @@ class PLXD {
         Utils.log(`Welcome to Plextended v${this._VERSION}! Last updated on ${this._TIMESTAMP}.`);
 
         // Start Features
+        // FIXME: this needs to run when the URL changes
         new FinishTime();
     }
 }

@@ -62,6 +62,19 @@ class FinishTime {
      * Adds the Finish Time timestamp into the DOM
      */
     private _insertFinishTime = ( timestamp:string ):boolean => {
-        return true;
+        // Choose where to insert the timestamp
+        const tar:HTMLSpanElement|null = document.querySelector('span[class^=PrePlayTertiaryTitleSpacer]');
+        if( tar === null ){
+            throw new Error(`Couldn't place timestamp, target was null`);
+        }else{
+            // Build a new location for the timestamp
+            const stampSpot: HTMLSpanElement = document.createElement('span');
+            stampSpot.id = 'plxd_stampSpot';
+            tar.appendChild(stampSpot);
+            // Display the timestamp info
+            stampSpot.innerHTML = `<span style="margin:0 4px">&middot;</span>Finish by ${timestamp}`;
+
+            return true;
+        }
     }
 }
